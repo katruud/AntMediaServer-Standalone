@@ -5,9 +5,9 @@ terraform {
       version = "~> 4.37.0"
     }
 
-    random = {
-      source  = "hashicorp/random"
-      version = "3.0.0"
+    http = {
+      source  = "hashicorp/http"
+      version = ">=1.2.0"
     }
   }
 
