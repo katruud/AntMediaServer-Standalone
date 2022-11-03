@@ -46,8 +46,12 @@ resource "aws_network_interface" "ant_media_interface" {
 
 # Security Group
 # Access IP is our IP for dev https://stackoverflow.com/questions/46763287
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com/ip"
+}
 locals {
-  access_ip = "${chomp(data.http.myip.response_body)}/32"
+  my_ip = ["${chomp(data.http.myip.response_body)}/32"]
+  access_cidr = concat(var.access_ips,local.my_ip)
 }
 
 resource "aws_security_group" "ant_media_sg" {
@@ -60,7 +64,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 5080
     to_port     = 5080
     protocol    = "tcp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   ingress {
@@ -68,7 +72,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 5443
     to_port     = 5443
     protocol    = "tcp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   ingress {
@@ -76,7 +80,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 1935
     to_port     = 1935
     protocol    = "tcp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   ingress {
@@ -84,7 +88,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 5554
     to_port     = 5554
     protocol    = "tcp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   ingress {
@@ -92,7 +96,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 4200
     to_port     = 4200
     protocol    = "tcp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   ingress {
@@ -100,7 +104,7 @@ resource "aws_security_group" "ant_media_sg" {
     from_port   = 5000
     to_port     = 65000
     protocol    = "udp"
-    cidr_blocks = [local.access_ip]
+    cidr_blocks = local.access_cidr
   }
 
   egress {
