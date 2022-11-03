@@ -19,28 +19,56 @@ data "aws_ami" "ant_media_ami" {
 
 # AMS EC2 Instance
 resource "aws_instance" "ant_media_ec2" {
+  count                  = var.instances
   ami                    = data.aws_ami.ant_media_ami.id
   instance_type          = var.instance_type
   # ARM is not supported in all AZ
-  availability_zone = var.az
+  availability_zone = element(var.az, count.index)
 
   network_interface {
-    network_interface_id = aws_network_interface.ant_media_interface.id
+    network_interface_id = element(aws_network_interface.ant_media_interface[*].id, count.index)
     device_index         = 0
   }
 
   tags = {
-    Name = var.instance_name
+    Name = format("%s %s", var.instance_name,"${count.index + 1}")
   }
 }
 
 resource "aws_network_interface" "ant_media_interface" {
-  subnet_id   = aws_subnet.ant_media_subnet.id
-  private_ips = [var.instance_private_ip]
+  count = var.instances
+  subnet_id   = element(aws_subnet.ant_media_private_subnet[*].id, count.index)
+  private_ips = var.instance_private_ip
   security_groups = [aws_security_group.ant_media_sg.id]
 
   tags = {
     Name = "primary_network_interface"
+  }
+}
+
+# Load balancer for HTTP
+resource "aws_lb" "ant_media_lb" {
+  name               = "ant-media-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.ant_media_sg.id]
+  subnets            = [for subnet in aws_subnet.ant_media_public_subnet : subnet.id]
+
+  tags = {
+    Name = "Ant media application LB"
+  }
+}
+
+# Load balancer for RTMP
+resource "aws_lb" "ant_media_lb" {
+  name               = "ant-media-lb"
+  internal           = false
+  load_balancer_type = "network"
+  security_groups    = [aws_security_group.ant_media_sg.id]
+  subnets            = [for subnet in aws_subnet.ant_media_public_subnet : subnet.id]
+
+  tags = {
+    Name = "Ant media network LB"
   }
 }
 
