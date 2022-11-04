@@ -2,6 +2,7 @@ variable "region" {
   description = "AWS region"
 }
 
+# ARM support in us-east-1a, us-east-1b, us-east-1c, us-east-1d, us-east-1f
 variable "az" {
   type        = list(string)
   description = "AWS AZ"
@@ -41,4 +42,16 @@ variable "access_ips" {
 
 variable "instances" {
   description = "Number of EC2 instances to provision"
+}
+
+variable "certificate" {
+  description = "ARN of certificate"
+}
+
+variable "zone_name" {
+  description = "Name of hosted zone"
+}
+
+variable "creator" {
+  description = "Creator of resource"
 }

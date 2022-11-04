@@ -31,7 +31,7 @@ resource "aws_instance" "ant_media_ec2" {
   }
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = format("%s %s", var.instance_name, "${count.index + 1}")
   }
@@ -44,7 +44,7 @@ resource "aws_network_interface" "ant_media_interface" {
   security_groups = [aws_security_group.ant_media_ec2_sg.id]
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = format("%s %s", "Network interface", "${count.index + 1}")
   }
@@ -64,16 +64,16 @@ resource "aws_security_group" "ant_media_ec2_sg" {
     security_groups = [aws_security_group.ant_media_alb_sg.id]
   }
 
-  # ingress {
-  #   description = "HTTPS"
-  #   from_port   = 5443
-  #   to_port     = 5443
-  #   protocol    = "tcp"
-  #   security_groups = [aws_security_group.ant_media_alb_sg.id]
-  # }
+  ingress {
+    description = "HTTPS"
+    from_port   = 5443
+    to_port     = 5443
+    protocol    = "tcp"
+    security_groups = [aws_security_group.ant_media_alb_sg.id]
+  }
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS EC2 SG"
   }

@@ -5,7 +5,7 @@ resource "aws_vpc" "ant_media_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS VPC"
   }
@@ -20,7 +20,7 @@ resource "aws_subnet" "ant_media_private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS private subnet ${count.index + 1}"
   }
@@ -34,7 +34,7 @@ resource "aws_subnet" "ant_media_public_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS public subnet ${count.index + 1}"
   }
@@ -45,7 +45,7 @@ resource "aws_internet_gateway" "ant_media_gw" {
   vpc_id = aws_vpc.ant_media_vpc.id
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS IGW"
   }
@@ -61,7 +61,7 @@ resource "aws_route_table" "ant_media_route" {
   }
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS route table"
   }

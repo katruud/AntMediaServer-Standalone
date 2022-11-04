@@ -8,7 +8,7 @@ resource "aws_lb" "ant_media_alb" {
   subnets            = [for subnet in aws_subnet.ant_media_public_subnet : subnet.id]
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS ALB"
   }
@@ -27,24 +27,33 @@ resource "aws_security_group" "ant_media_alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  #   ingress {
-  #     description = "HTTPS"
-  #     from_port   = 5443
-  #     to_port     = 5443
-  #     protocol    = "tcp"
-  #     cidr_blocks = ["0.0.0.0/0"]
-  #   }
+    ingress {
+      description = "HTTPS"
+      from_port   = 5443
+      to_port     = 5443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS ALB SG"
   }
 }
 
-resource "aws_security_group_rule" "egress_alb" {
+resource "aws_security_group_rule" "egress_alb_http" {
   security_group_id        = aws_security_group.ant_media_alb_sg.id
   from_port                = 5080
   to_port                  = 5080
+  protocol                 = "tcp"
+  type                     = "egress"
+  source_security_group_id = aws_security_group.ant_media_ec2_sg.id
+}
+
+resource "aws_security_group_rule" "egress_alb_https" {
+  security_group_id        = aws_security_group.ant_media_alb_sg.id
+  from_port                = 5443
+  to_port                  = 5443
   protocol                 = "tcp"
   type                     = "egress"
   source_security_group_id = aws_security_group.ant_media_ec2_sg.id
@@ -72,7 +81,7 @@ resource "aws_lb_target_group" "ant_media_target" {
   }
 
   tags = {
-    CreatedBy    = "katruud"
+    CreatedBy    = var.creator
     AppName      = "ant-media-server"
     ResourceName = "AMS target group"
   }
@@ -98,13 +107,14 @@ resource "aws_lb_listener" "ant_media_alb_listener_http" {
     target_group_arn = aws_lb_target_group.ant_media_target.arn
   }
 }
-# resource "aws_lb_listener" "ant_media_alb_listener_https" {
-#   load_balancer_arn = aws_lb.ant_media_alb.arn
-#   port              = "5443"
-#   protocol          = "HTTPS"
+resource "aws_lb_listener" "ant_media_alb_listener_https" {
+  load_balancer_arn = aws_lb.ant_media_alb.arn
+  port              = "5443"
+  protocol          = "HTTPS"
+  certificate_arn   = var.certificate
 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.ant_media_target.arn
-#   }
-# }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ant_media_target.arn
+  }
+}
