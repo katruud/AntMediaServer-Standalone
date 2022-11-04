@@ -3,6 +3,6 @@
 #     bucket         = ""
 #     encrypt        = true
 #     key            = "tf/ant-media-standalone/terraform.tfstate"
-#     region         = "us-east-2"
+#     region         = "us-east-1"
 #   }
 # }

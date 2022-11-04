@@ -6,11 +6,17 @@ resource "aws_lb" "ant_media_alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ant_media_alb_sg.id]
   subnets            = [for subnet in aws_subnet.ant_media_public_subnet : subnet.id]
+
+  tags = {
+    CreatedBy    = "katruud"
+    AppName      = "ant-media-server"
+    ResourceName = "AMS ALB"
+  }
 }
 
 # ALB SG
 resource "aws_security_group" "ant_media_alb_sg" {
-  name        = "Ant Media Server ALB SG"
+  name   = "Ant Media Server ALB SG"
   vpc_id = aws_vpc.ant_media_vpc.id
 
   ingress {
@@ -21,21 +27,17 @@ resource "aws_security_group" "ant_media_alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-#   egress {
-#     from_port        = 5080
-#     to_port          = 5080
-#     protocol         = "tcp"
-#     security_groups = [aws_security_group.ant_media_ec2_sg.id]
-#   }
-#   ingress {
-#     description = "HTTPS"
-#     from_port   = 5443
-#     to_port     = 5443
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  #   ingress {
+  #     description = "HTTPS"
+  #     from_port   = 5443
+  #     to_port     = 5443
+  #     protocol    = "tcp"
+  #     cidr_blocks = ["0.0.0.0/0"]
+  #   }
   tags = {
-    Name = "ant media alb security group"
+    CreatedBy    = "katruud"
+    AppName      = "ant-media-server"
+    ResourceName = "AMS ALB SG"
   }
 }
 
@@ -57,25 +59,31 @@ resource "aws_lb_target_group" "ant_media_target" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.ant_media_vpc.id
   health_check {
-    enabled = true
+    enabled           = true
     healthy_threshold = 3
-    interval = 10
-    matcher = 200
-    path = "/"
+    interval          = 10
+    matcher           = 200
+    path              = "/"
     # "/liveness"
-    port = 5080
-    protocol = "HTTP"
-    timeout = 3
+    port                = 5080
+    protocol            = "HTTP"
+    timeout             = 3
     unhealthy_threshold = 2
+  }
+
+  tags = {
+    CreatedBy    = "katruud"
+    AppName      = "ant-media-server"
+    ResourceName = "AMS target group"
   }
 }
 
 # ALB target group attach
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group_attachment
 resource "aws_alb_target_group_attachment" "attach_ec2" {
-  count = length(aws_instance.ant_media_ec2)
+  count            = length(aws_instance.ant_media_ec2)
   target_group_arn = aws_lb_target_group.ant_media_target.arn
-  target_id = aws_instance.ant_media_ec2[count.index].id
+  target_id        = aws_instance.ant_media_ec2[count.index].id
 }
 
 # ALB Listeners

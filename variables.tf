@@ -16,7 +16,7 @@ variable "instance_name" {
 }
 
 variable "instance_private_ip" {
-    type        = list(string)
+  type        = list(string)
   description = "EC2 private IP"
 }
 
@@ -25,20 +25,20 @@ variable "vpc_cidr" {
 }
 
 variable "private_subnet_cidrs" {
- type        = list(string)
- description = "Private Subnet CIDR values"
+  type        = list(string)
+  description = "Private Subnet CIDR values"
 }
 
 variable "public_subnet_cidrs" {
- type        = list(string)
- description = "Private Subnet CIDR values"
+  type        = list(string)
+  description = "Private Subnet CIDR values"
 }
 
 variable "access_ips" {
- type        = list(string)
- description = "Additional IPs to grant access"
+  type        = list(string)
+  description = "Additional IPs to grant access"
 }
 
 variable "instances" {
- description = "Number of EC2 instances to provision"
+  description = "Number of EC2 instances to provision"
 }
