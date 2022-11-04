@@ -1,6 +1,8 @@
 # VPC
 resource "aws_vpc" "ant_media_vpc" {
   cidr_block = var.vpc_cidr
+    enable_dns_support = true
+    enable_dns_hostnames = true
 
     tags = {
     Name = "ant media vpc"
@@ -56,8 +58,7 @@ resource "aws_route_table" "ant_media_route" {
 }
 
 resource "aws_route_table_association" "public_subnet_asso" {
- count = length(var.private_subnet_cidrs)
- subnet_id      = element(aws_subnet.ant_media_subnet[*].id, count.index)
+ count = length(var.public_subnet_cidrs)
+ subnet_id      = element(aws_subnet.ant_media_public_subnet[*].id, count.index)
  route_table_id = aws_route_table.ant_media_route.id
 }
-

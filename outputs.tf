@@ -17,3 +17,7 @@ output "instance_password" {
 output "instance_ip" {
   value = aws_instance.ant_media_ec2[*].public_ip
 }
+
+output "alb_domain" {
+  value = aws_lb.ant_media_alb.dns_name
+}

@@ -24,7 +24,12 @@ variable "vpc_cidr" {
   description = "CIDR range of VPC"
 }
 
-variable "subnet_cidrs" {
+variable "private_subnet_cidrs" {
+ type        = list(string)
+ description = "Private Subnet CIDR values"
+}
+
+variable "public_subnet_cidrs" {
  type        = list(string)
  description = "Private Subnet CIDR values"
 }
@@ -36,8 +41,4 @@ variable "access_ips" {
 
 variable "instances" {
  description = "Number of EC2 instances to provision"
-}
-
-variable "domain" {
- description = "Domain to associate with alb"
 }
