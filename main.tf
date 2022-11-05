@@ -13,8 +13,9 @@ data "aws_ami" "ant_media_ami" {
 
   filter {
     name   = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
+  # ARM is allowed, but does not support SRT ingest
 }
 
 # AMS EC2 Instance
@@ -60,17 +61,44 @@ resource "aws_security_group" "ant_media_ec2_sg" {
     description     = "HTTP"
     from_port       = 5080
     to_port         = 5080
-    protocol        = "tcp"
+    protocol        = "TCP"
+    # Need to allow TCP health check from NLB
+    # security_groups = [aws_security_group.ant_media_alb_sg.id]
+    cidr_blocks = var.public_subnet_cidrs
+  }
+
+  ingress {
+    description     = "HTTPS"
+    from_port       = 5443
+    to_port         = 5443
+    protocol        = "TCP"
     security_groups = [aws_security_group.ant_media_alb_sg.id]
   }
 
   ingress {
-    description = "HTTPS"
-    from_port   = 5443
-    to_port     = 5443
-    protocol    = "tcp"
-    security_groups = [aws_security_group.ant_media_alb_sg.id]
+    description = "SRT"
+    from_port   = 4200
+    to_port     = 4200
+    protocol    = "UDP"
+    cidr_blocks = var.public_subnet_cidrs
   }
+
+    ingress {
+    description = "RTMP"
+    from_port   = 1935
+    to_port     = 1935
+    protocol    = "TCP"
+    cidr_blocks = var.public_subnet_cidrs
+  }
+
+  # Required for low latency WebRTC
+  # ingress {
+  #   description = "WebRTC and RTSP"
+  #   from_port   = 5000
+  #   to_port     = 65000
+  #   protocol    = "udp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     CreatedBy    = var.creator
