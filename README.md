@@ -2,7 +2,11 @@
 
 This repository contains modules and configurations for deploying [Ant Media Server Enterprise](https://aws.amazon.com/marketplace/pp/prodview-s72grshttriy4) (AMS) to your AWS account. The standalone configuration refers to the operation of the server in single-instance mode as opposed to AMS's supported [cluster mode](https://antmedia.io/ant-media-server-cluster/). 
 
-This is currently a work in progress, with the end goal of providing a low-latency (from using modern protocols such as SRT and WebRTC), low traffic streaming pipeline for stream composition before delivery to a high-traffic, low cost CDN. An application targeted for this service is virtual music festival productions, such as [OMF](https://tech.orionvr.club/).
+## Application
+
+This is currently a work in progress, with the end goal of providing a low-latency (from using modern protocols such as SRT and WebRTC), low traffic streaming pipeline for stream composition before delivery to a high-traffic, low cost CDN. An application targeted for this service is virtual music festival productions, such as [OMF](https://tech.orionvr.club/). The proposed workflow for this application is shown below.
+
+<img src="https://raw.githubusercontent.com/katruud/AntMediaServer-Standalone/main/.images/omf_production-stream.png" width="600">
 
 ## Modules
 
