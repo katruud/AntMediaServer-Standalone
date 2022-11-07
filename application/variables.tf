@@ -1,19 +1,19 @@
-variable "region" {
-  description = "AWS region"
-}
-
 # ARM support in us-east-1a, us-east-1b, us-east-1c, us-east-1d, us-east-1f
 variable "az" {
   type        = list(string)
   description = "AWS AZ"
 }
 
+variable "region" {
+  description = "AWS Region"
+}
+
 variable "instance_type" {
   description = "Type of EC2 instance to provision"
 }
 
-variable "instance_name" {
-  description = "EC2 instance name"
+variable "architecture" {
+  description = "Type of EC2 architecture"
 }
 
 variable "instance_private_ip" {
@@ -35,9 +35,10 @@ variable "public_subnet_cidrs" {
   description = "Private Subnet CIDR values"
 }
 
-variable "access_ips" {
+variable "public_udp_cidrs" {
   type        = list(string)
-  description = "Additional IPs to grant access"
+  description = "CIDR Range for WebRTC UDP access"
+  default     = ["0.0.0.0/0"]
 }
 
 variable "instances" {
@@ -45,11 +46,12 @@ variable "instances" {
 }
 
 variable "certificate" {
-  description = "ARN of certificate"
+  description = "HTTPS Certificate for ALB"
 }
 
-variable "zone_name" {
-  description = "Name of hosted zone"
+variable "appname" {
+  description = "Application name"
+  default     = "Ant Media Server"
 }
 
 variable "creator" {

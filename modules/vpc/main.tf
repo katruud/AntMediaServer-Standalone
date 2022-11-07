@@ -5,9 +5,9 @@ resource "aws_vpc" "ant_media_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    CreatedBy    = var.creator
-    AppName      = "ant-media-server"
-    ResourceName = "AMS VPC"
+    CreatedBy = var.creator
+    AppName   = var.appname
+    Name      = "AMS VPC"
   }
 }
 
@@ -20,9 +20,9 @@ resource "aws_subnet" "ant_media_private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    CreatedBy    = var.creator
-    AppName      = "ant-media-server"
-    ResourceName = "AMS private subnet ${count.index + 1}"
+    CreatedBy = var.creator
+    AppName   = "ant-media-server"
+    Name      = "AMS private subnet ${count.index + 1}"
   }
 }
 
@@ -34,9 +34,9 @@ resource "aws_subnet" "ant_media_public_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    CreatedBy    = var.creator
-    AppName      = "ant-media-server"
-    ResourceName = "AMS public subnet ${count.index + 1}"
+    CreatedBy = var.creator
+    AppName   = "ant-media-server"
+    Name      = "AMS public subnet ${count.index + 1}"
   }
 }
 
@@ -45,9 +45,9 @@ resource "aws_internet_gateway" "ant_media_gw" {
   vpc_id = aws_vpc.ant_media_vpc.id
 
   tags = {
-    CreatedBy    = var.creator
-    AppName      = "ant-media-server"
-    ResourceName = "AMS IGW"
+    CreatedBy = var.creator
+    AppName   = "ant-media-server"
+    Name      = "AMS IGW"
   }
 }
 
@@ -61,9 +61,9 @@ resource "aws_route_table" "ant_media_route" {
   }
 
   tags = {
-    CreatedBy    = var.creator
-    AppName      = "ant-media-server"
-    ResourceName = "AMS route table"
+    CreatedBy = var.creator
+    AppName   = "ant-media-server"
+    Name      = "AMS route table"
   }
 }
 
